@@ -17,7 +17,7 @@ from keras.models import load_model
 genre = "christmas-carols"
 genre_w_instr = f"{genre}-guitar"
 model_load = "" # leave empty if you want start from begining
-instr = instrument.Piano()
+instr = instrument.Piano
 epochs = 100
 
 def train_network():
@@ -118,6 +118,8 @@ def create_network(network_input, n_vocab):
     model.add(Activation('softmax'))
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
 
+    model.summary()
+
     return model
 
 def train(model, network_input, network_output):
@@ -131,6 +133,9 @@ def train(model, network_input, network_output):
         mode='min'
     )
     callbacks_list = [checkpoint]
+
+    with open(f"{genre_w_instr}.txt", "a") as myfile:
+        myfile.write(filepath)
 
     model.fit(network_input, network_output, epochs=epochs, batch_size=128, callbacks=callbacks_list)
 
