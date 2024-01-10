@@ -118,8 +118,6 @@ def create_network(network_input, n_vocab):
     model.add(Activation('softmax'))
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
 
-    model.summary()
-
     return model
 
 def train(model, network_input, network_output):
