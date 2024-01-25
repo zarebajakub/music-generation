@@ -10,15 +10,16 @@ from keras.layers import LSTM
 from keras.layers import BatchNormalization as BatchNorm
 from keras.layers import Activation
 
-genre = "christmas-carols"
-model = "best-100"
-song_length = 500
+genre = "jazz"
+genre_w_instr = f"{genre}-piano"
+saved_model = "best-200"
+song_length = 200
 instr = instrument.Piano()
 
 def generate():
     """ Generate a instr midi file """
     #load the notes used to train the model
-    with open(f'data/notes-{genre}', 'rb') as filepath:
+    with open(f'data/notes-{genre_w_instr}', 'rb') as filepath:
         notes = pickle.load(filepath)
 
     # Get all pitch names
@@ -76,7 +77,7 @@ def create_network(network_input, n_vocab):
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
 
     # Load the weights to each node
-    model.load_weights(f'output/{genre}/{model}.hdf5')
+    model.load_weights(f'output/{genre_w_instr}/{saved_model}.hdf5')
 
     return model
 
@@ -90,7 +91,7 @@ def generate_notes(model, network_input, pitchnames, n_vocab):
     pattern = network_input[start]
     prediction_output = []
 
-    # generate 500 notes
+    # generate notes
     for note_index in range(song_length):
         if (note_index % 10 == 0):
             print(f"note {note_index} out of {song_length}")
@@ -142,7 +143,7 @@ def create_midi(prediction_output):
     midi_stream = stream.Score()
     midi_stream.insert(0, output_notes)
 
-    midi_stream.write('midi', fp=f'results/{genre}-{model}.mid')
+    midi_stream.write('midi', fp=f'results/{genre_w_instr}-{saved_model}.mid')
 
 if __name__ == '__main__':
     generate()
