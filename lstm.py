@@ -13,9 +13,10 @@ from keras.layers import BatchNormalization as BatchNorm
 from keras.utils import to_categorical
 from keras.callbacks import ModelCheckpoint
 from keras.models import load_model
+from keras.callbacks import CSVLogger
 
 genre = "christmas-carols"
-genre_w_instr = f"{genre}-guitar"
+genre_w_instr = f"{genre}-piano"
 model_load = "" # leave empty if you want start from begining
 instr = instrument.Piano
 epochs = 100
@@ -38,7 +39,7 @@ def train_network():
     train(model, network_input, network_output)
 
 def get_notes():
-    """ Get all the notes and chords from the midi files in the ./midi_songs directory """
+    """ Get all the notes and chords from the midi files in the dataset directory """
     notes = []
 
     for file in glob.glob(f"dataset/{genre}/*.mid"):
@@ -122,7 +123,7 @@ def create_network(network_input, n_vocab):
 
 def train(model, network_input, network_output):
     """ train the neural network """
-    filepath = "output/"+genre+"/weights-improvement-{epoch:02d}-{loss:.4f}-bigger.hdf5"
+    filepath = "output/"+genre_w_instr+"/weights-improvement-{epoch:02d}-{loss:.4f}-bigger.hdf5"
     checkpoint = ModelCheckpoint(
         filepath,
         monitor='loss',
@@ -130,10 +131,8 @@ def train(model, network_input, network_output):
         save_best_only=True,
         mode='min'
     )
-    callbacks_list = [checkpoint]
-
-    with open(f"{genre_w_instr}.txt", "a") as myfile:
-        myfile.write(filepath)
+    csv_logger = CSVLogger(f'output/log-{genre_w_instr}.csv', append=True, separator=';')
+    callbacks_list = [checkpoint, csv_logger]
 
     model.fit(network_input, network_output, epochs=epochs, batch_size=128, callbacks=callbacks_list)
 
