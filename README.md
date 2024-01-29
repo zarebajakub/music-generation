@@ -19,7 +19,7 @@ Here are notes for each genre and instrument saved in *pickle* format.
 There are results for generation that are placed in thesis.
 
 ## other files
-*lstm.py* was used for model training
-*predict.py* was used for music generation
-*predict_w_joining_notes* was used for music generation with different notes duration
-*count_instruments.py* was used to determine how much each instrument was used in each genre
+- *lstm.py* was used for model training
+- *predict.py* was used for music generation
+- *predict_w_joining_notes* was used for music generation with different notes duration
+- *count_instruments.py* was used to determine how much each instrument was used in each genre
